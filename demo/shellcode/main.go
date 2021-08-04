@@ -59,11 +59,11 @@ func main() {
 	}
 
 	text.VirtualSize = uint32(len(shellcode))
-	text.SizeOfRawData = uint32(pe.Align(uint(text.VirtualSize), uint(pent.OptionalHeader.SectionAlignment)))
+	text.SizeOfRawData = uint32(pe.Align(uint(text.VirtualSize), uint(pent.OptionalHeader.FileAlignment)))
 	text.PointerToRawData = uint32(length)
 
 	// 对齐，填充0x00
-	fillBytes := pe.FillZeroByte(int(text.SizeOfRawData - uint32(len(shellcode))))
+	fillBytes := pe.FillZeroByte(int(text.SizeOfRawData - text.VirtualSize))
 	shellcode = append(shellcode, fillBytes...)
 	length += len(shellcode)
 
