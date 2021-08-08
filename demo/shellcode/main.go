@@ -28,7 +28,7 @@ func main() {
 			Characteristics:  pe.ImageFileRelocsStripped | pe.ImageFileExecutableImage | pe.ImageFileLineNumsStripped | pe.ImageFile32bitMachine,
 		},
 		OptionalHeader: pe.ImageOptionalHeader32{
-			Magic:                 pe.ImageOptionalMagic32,
+			Magic:                 pe.ImageNtOptionalHdr32Magic,
 			AddressOfEntryPoint:   0x1000,
 			ImageBase:             0x400000,
 			SectionAlignment:      0x1000,
@@ -65,7 +65,6 @@ func main() {
 	// 对齐，填充0x00
 	fillBytes := pe.FillZeroByte(int(text.SizeOfRawData - text.VirtualSize))
 	shellcode = append(shellcode, fillBytes...)
-	length += len(shellcode)
 
 	pent.OptionalHeader.SizeOfImage = pent.OptionalHeader.SizeOfHeaders +
 		uint32(pe.Align(uint(text.SizeOfRawData),

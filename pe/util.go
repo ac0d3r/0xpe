@@ -1,5 +1,11 @@
 package pe
 
+import (
+	"bytes"
+	"encoding/binary"
+	"log"
+)
+
 func ToC8bytes(s string) [8]byte {
 	r := [8]byte{}
 	off := len(s)
@@ -25,6 +31,27 @@ func Align(idx uint, aligment uint) uint {
 
 // FillZeroByte 填充 0x00
 func FillZeroByte(len int) []byte {
-	s := make([]byte, len, len)
-	return s
+	return make([]byte, len, len)
+}
+
+func StrConv2Bytes(s string) []byte {
+	r := []byte(s)
+	return append(r, 0x00)
+}
+
+func GetBinaryBytes(order binary.ByteOrder, data interface{}) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	if err := binary.Write(buf, order, data); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func MustGetBinaryBytes(order binary.ByteOrder, data interface{}) []byte {
+	if raw, err := GetBinaryBytes(order, data); err != nil {
+		log.Fatalln(err)
+	} else {
+		return raw
+	}
+	return nil
 }

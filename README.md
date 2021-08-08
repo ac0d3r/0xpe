@@ -1,9 +1,18 @@
 # 0xpe
 
-[pe-doc.md](./doc.md)
-
+相关结构和常量定义在了 `pe` package 下
 ## demo
 
-- demo01：[shellcode](./demo/shellcode/main.go)
+- shellcode: [code](./demo/shellcode/main.go)
 
-shellcode 直接填充到 .text 区块 (thx: https://x.hacking8.com/post-419.html)
+将 shellcode 直接填充到 .text 区块
+
+- helloworld: [code](./demo/helloworld/main.go)
+
+实现一个功能和 `hello.asm` 一样的 exe
+
+**粗糙笔记：**
+[pe-doc.md](./doc.md)
+
+## thx
+- https://x.hacking8.com/post-419.html

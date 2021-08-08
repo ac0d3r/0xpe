@@ -15,10 +15,10 @@ const (
 
 type SectionHeader32 struct {
 	Name                 [8]uint8
-	VirtualSize          uint32 //实际的、被使用的区块大小，是区块在没被对齐处理之前的大小
+	VirtualSize          uint32 //实际的、被使用的区块大小(是区块在没被对齐处理之前的大小)
 	VirtualAddress       uint32 //（Voffset）：装载到内存中的RVA，按照内存对齐，默认为1000h
 	SizeOfRawData        uint32 // （Rsize）在磁盘中的大小，经过了对齐，FileAlignment默认大小为200h
-	PointerToRawData     uint32 // （Roffset）盘文件中的偏移。如果程序自装载，这个字段比VitrualAddress更重要
+	PointerToRawData     uint32 // 文件中区块的偏移
 	PointerToRelocations uint32
 	PointerToLineNumbers uint32
 	NumberOfRelocations  uint16
