@@ -16,7 +16,7 @@ MASM32是一个免费的软件包，该软件包中包含了汇编编译器 ml.e
 `path=D:\GO\bin;%PATH%`
 
 
-## demo01
+## hello-world demo
 
 ```masm
 ; hello.asm
@@ -47,7 +47,7 @@ F:\> ml -c -coff .\hello.asm
 F:\> link -subsystem:windows .\hello.obj
 ```
 
-# 小笔记
+# 小记
 
 ## Win32 API
 
@@ -64,3 +64,4 @@ A和W表示这个函数使用的字符集，A代表ANSI字符集，W表示宽字
 - ebp（栈基地址指针）
 - esp（栈顶指针）
 - eip（指向下一条要执行的指令的位置）
+

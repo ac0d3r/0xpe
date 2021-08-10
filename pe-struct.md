@@ -233,29 +233,6 @@ INT表（又称为提示名表Hint-name Table）不可以改写，IAT由PE装载
 
 ![image](https://user-images.githubusercontent.com/26270009/127756041-eecf4913-5fab-475b-a777-bf5eceb1f978.png)
 
-## PE导出表
-
-导出表描述了导出表所在PE文件向其他程序提供的可供调用的函数的情况。说明这个问题首先我们先了解一下代码重用机制。该机制提供了重用代码的动态链接库。而导出表就向调用者说明库当中有哪些函数可以被调用。
-
-```c++
-typedef struct _IMAGE_EXPORT_DIRECTORY
-{
-  DWORD Characteristics; // 未使用，总是定义为0
-  DWORD TimeDateStamp; // 文件生成时间
-  WORD MajorVersion; // 未使用，总是定义为0
-  WORD MinorVersion; // 未使用，总是定义为0
-  DWORD Name; // 模块的真实名称
-  DWORD Base; // 基数，加上序数就是函数地址数组的索引值
-  DWORD NumberOfFunctions; // 导出函数的总数
-  DWORD NumberOfNames; // 以名称方式导出的函数的总数
-  DWORD AddressOfFunctions; // 指向输出函数地址的RVA
-  DWORD AddressOfNames; // 指向输出函数名字的RVA
-  DWORD AddressOfNameOrdinals; // 指向输出函数序号的RVA
-} IMAGE_EXPORT_DIRECTORY;
-```
-
-在导入表当中的 IMAGE_IMPORT_DESCRIPTOR 个数与调用的动态链接库个数相等，然而导出表的 IMAGE_EXPORT_DIRECTORY 只有一个。
-
 
 ## thx:
 - https://docs.microsoft.com/en-us/windows/win32/api/winnt/
