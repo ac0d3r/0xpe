@@ -56,12 +56,3 @@ F:\> link -subsystem:windows .\hello.obj
 Win32 API中有名字的函数一般都有两个版本，其后缀分别以“A”和“W”结束，如创建文件的函数CreateFileA和CreateFileW（当然也有例外，如前面的ExitProcess函数）。
 
 A和W表示这个函数使用的字符集，A代表ANSI字符集，W表示宽字符，即Unicode字符集，在Windows中的Unicode字符一般是使用UCS2的UTF16-LE编码。
-
-## 寄存器
-
-32位寄存器，如eax、ebx、ecx、esi、edi、esp、ebp等。
-
-- ebp（栈基地址指针）
-- esp（栈顶指针）
-- eip（指向下一条要执行的指令的位置）
-

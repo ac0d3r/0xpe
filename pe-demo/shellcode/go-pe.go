@@ -1,7 +1,3 @@
-/*
-thx:
-	https://x.hacking8.com/post-419.html
-*/
 package main
 
 import (
