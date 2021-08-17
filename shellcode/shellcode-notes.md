@@ -202,6 +202,15 @@ dumpbin.exe /ALL .\shellcode.obj
 ![image](https://user-images.githubusercontent.com/26270009/129534764-43b61379-10e9-414d-8877-28d32f31904b.png)
 
 
+## 用 golang 写个 loader
+
+[loader.go](./loader.go) thx [@w8ay](https://github.com/boy-hack)，直接用[Makefile](./Makefile)编译： `$ make`
+
+**成功！！！**
+
+![image](https://user-images.githubusercontent.com/26270009/129661556-c8c72b49-de5b-47e8-87df-18d5302f018f.png)
+
+
 ## res
 - https://idafchev.github.io/exploit/2017/09/26/writing_windows_shellcode.html
 

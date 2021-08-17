@@ -237,6 +237,6 @@ INT表（又称为提示名表Hint-name Table）不可以改写，IAT由PE装载
 ## thx:
 - https://docs.microsoft.com/en-us/windows/win32/api/winnt/
 - https://www.nirsoft.net/kernel_struct/vista/index.html
-
+- https://x.hacking8.com/post-419.html
 - https://bbs.pediy.com/thread-265024.htm
 - https://0xor-writeup.readthedocs.io/zh/latest/reversing/encrypt&decrypt/%E5%8A%A0%E5%AF%86%E4%B8%8E%E8%A7%A3%E5%AF%86%20%E7%AC%AC%E5%8D%81%E7%AB%A0-PE%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/

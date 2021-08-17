@@ -1,15 +1,16 @@
 # 0xpe
 
-相关结构和常量定义在了 `pe` package 下
-## pe-demo
+相关结构和常量定义在 `pe` package
 
-- shellcode: [code](./pe-demo/shellcode/main.go)
+## 手搓PE文件
+- shellcode: [code](./pe-demo/shellcode)
 
-将 shellcode 直接填充到 .text 区块
+创建一个 exe 将 shellcode 直接填充到 .text 区块。
 
-- helloworld: [code](./pe-demo/helloworld/main.go)
+- helloworld: [code](./pe-demo/helloworld)
 
-实现一个功能和 `hello.asm` 一样的 exe
+导入 `user32.dll`，`kernel32.dll` 库及函数寻址，实现一个功能和 `hello.asm` 一样的 exe。
 
-## res
-- https://x.hacking8.com/post-419.html
+## 编写 windows shellcode
+
+- 用 asm 编写一个简单的 shellcode 思路总结：[notes.md](./shellcode-notes.md)
