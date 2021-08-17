@@ -13,4 +13,4 @@
 
 ## 编写 windows shellcode
 
-- 用 asm 编写一个简单的 shellcode 思路总结：[notes.md](./shellcode-notes.md)
+- 用 asm 编写一个简单的 shellcode 思路总结：[notes.md](./shellcode/shellcode-notes.md)
