@@ -1,5 +1,3 @@
-# 编写shellcode
-
 ## shellcode 是什么？
 [shellcode-wiki](https://en.wikipedia.org/wiki/Shellcode)
 
@@ -9,7 +7,7 @@
 - 不能对字符串使用直接偏移，必须将字符串存储在堆栈中
 - dll中的函数寻址，由于 ASLR 不会每次都在同一个地址中加载，可以通过 PEB.PEB_LDR_DATA 找到加载模块调用其导出的函数，或加载新 dll。
 - 避免空字节
-     
+
      `NULL` 字节的值为 `0x00`，在 C/C++ 代码中，NULL 字节被视为字符串的终止符。因此，shellcode 中这些字节的存在可能会干扰目标应用程序的功能，并且我们的 shellcode 可能无法正确复制到内存中。
 
      ```asm
@@ -17,7 +15,7 @@
      xor ebx, ebx
      ```
      用下面的语句代替上面的语句，结果是一样的。
-     
+
      此外，在某些特定情况下，shellcode 必须避免使用字符，例如 `\r` 或 `\n`，甚至只使用字母数字字符。
 
 
@@ -25,7 +23,7 @@
 
 在 Windows 中，应用程序不能直接访问系统调用，使用来自 Windows API ( WinAPI ) 的函数，Windows API函数都存储在 kernel32.dll、advapi32.dll、gdi32.dll 等中。ntdll.dll 和 kernel32.dll 非常重要，以至于每个进程都会导入它们：
 
-这是我编写 [nothing_to_do](./nothing_to_do.cpp) 程序，用 [listdlls](https://docs.microsoft.com/en-us/sysinternals/downloads/listdlls)列出导入的 dll：
+这是我编写 [nothing_to_do](https://github.com/Buzz2d0/0xpe/blob/master/shellcode/nothing_to_do.cpp) 程序，用 [listdlls](https://docs.microsoft.com/en-us/sysinternals/downloads/listdlls)列出导入的 dll：
 
 
 ![image](https://user-images.githubusercontent.com/26270009/128963802-891275c3-c4ef-4ec6-ad86-1c6caf070772.png)
@@ -101,7 +99,7 @@ mov ebx, [eax + 0x10]       ; ebx = dll Base address
 ```
 
 ### dll导出表中函数寻址
-相关pe结构在[这](../pe-demo)。
+之前学习pe结构相关资料在[这](https://github.com/Buzz2d0/0xpe/blob/master/pe-demo)。
 
 ImageOptionalHeader32.DataDirectory[0].VirtualAddress 指向导出表RVA，导出表的结构如下：
 ```c++
@@ -179,6 +177,75 @@ push esi        ; "C:\Windows\System32\calc.exe"
 call edx        ; WinExec(esi, 10)
 ```
 
+最终的[shellcode](https://github.com/Buzz2d0/0xpe/blob/master/shellcode/shellcode.cpp):
+
+```cpp
+int main()
+{
+    __asm {
+        ; Find where kernel32.dll is loaded into memory
+        xor ecx, ecx
+        mov ebx, fs:[ecx + 0x30]    ; 避免 00 空值 ebx = PEB基地址
+        mov ebx, [ebx+0x0c]         ; ebx = PEB.Ldr
+        mov esi, [ebx+0x14]         ; ebx = PEB.Ldr.InMemoryOrderModuleList
+        lodsd                       ; eax = Second module
+        xchg eax, esi               ; eax = esi, esi = eax
+        lodsd                       ; eax = Third(kernel32)
+        mov ebx, [eax + 0x10]       ; ebx = dll Base address
+        
+        ; Find PE export table
+        mov edx, [ebx + 0x3c]   ; 找到 dos header e_lfanew 偏移量
+        add edx, ebx            ; edx =  pe header
+        mov edx, [edx + 0x78]   ; edx = offset export table
+        add edx, ebx            ; edx = export table
+        mov esi, [edx + 0x20]   ; esi = offset names table
+        add esi, ebx            ; esi = names table
+        
+        ; 查找 WinExec 函数名
+        ; EniW  456E6957
+        xor ecx, ecx
+        Get_Function:
+            inc ecx                         ; ecx++
+            lodsd                           ; eax = 下一个函数名字符串rva
+            add eax, ebx                    ; eax = 函数名字符串指针
+            cmp dword ptr[eax], 0x456E6957  ; eax[0:4] == EniW
+            jnz Get_Function
+        dec ecx;
+        
+        ; 查找 Winexec 函数指针
+        mov esi, [edx + 0x24]     ; esi = ordianl table rva
+        add esi, ebx              ; esi = ordianl table
+        mov cx, [esi + ecx * 2]   ; ecx = func ordianl
+        mov esi, [edx + 0x1c]     ; esi = address table rva
+        add esi, ebx              ; esi = address table
+        mov edx, [esi + ecx * 4]  ; edx = func address rva
+        add edx, ebx              ; edx = func address
+        
+        ; 调用 Winexec 函数
+        xor eax, eax
+        push edx
+        push eax        ; 0x00
+        push 0x6578652e
+        push 0x636c6163
+        push 0x5c32336d
+        push 0x65747379
+        push 0x535c7377
+        push 0x6f646e69
+        push 0x575c3a43
+        mov esi, esp    ; esi = "C:\Windows\System32\calc.exe"
+        push 10         ; window state SW_SHOWDEFAULT
+        push esi        ; "C:\Windows\System32\calc.exe"
+        call edx        ; WinExec(esi, 10)
+
+        ; exit
+		add esp, 0x1c
+        pop eax
+        pop edx
+    }
+    return 0;
+} 
+```
+
 ## dump shellcode
 
 vs 生成 shellcode 体积膨胀了好多，用 masm 重新写一下，小了很多：[shellcode.asm](./shellcode.asm)
@@ -188,23 +255,27 @@ vs 生成 shellcode 体积膨胀了好多，用 masm 重新写一下，小了很
 F:\> ml -c -coff .\shellcode.asm
 F:\> link -subsystem:windows .\shellcode.obj
 ```
+
 ---
+两种方法：
 
 1. dumpbin.exe
-dumpbin.exe /ALL .\shellcode.obj
+
+`$ dumpbin.exe /ALL .\shellcode.obj`
 
 ![image](https://user-images.githubusercontent.com/26270009/129534584-09f97d3f-f576-4a10-8f7d-14d2f0fd801d.png)
 
-2. 用PE View .text 区块中读取
+2. 从 PE  .text 区块中读取
 
-从 `PointerToRawData` 开始取 `VirtualSize` 大小的数据
+从 `PointerToRawData` 开始，取 `VirtualSize` 大小的数据
 
 ![image](https://user-images.githubusercontent.com/26270009/129534764-43b61379-10e9-414d-8877-28d32f31904b.png)
 
 
 ## 用 golang 写个 loader
+> thx [@w8ay](https://github.com/boy-hack)
 
-[loader.go](./loader.go) thx [@w8ay](https://github.com/boy-hack)，直接用[Makefile](./Makefile)编译： `$ make`
+[loader.go](https://github.com/Buzz2d0/0xpe/blob/master/shellcode/loader.go)，直接用[Makefile](https://github.com/Buzz2d0/0xpe/blob/master/shellcode/Makefile)编译：`$ make`
 
 **成功！！！**
 
