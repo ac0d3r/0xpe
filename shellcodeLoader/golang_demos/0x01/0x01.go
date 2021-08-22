@@ -1,5 +1,4 @@
 // +build windows
-// +build 386
 package main
 
 import (
