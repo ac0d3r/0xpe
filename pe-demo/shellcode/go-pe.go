@@ -1,7 +1,7 @@
 package main
 
 import (
-	"0xpe/pe"
+	"0xpe/src/pe"
 	"encoding/binary"
 	"encoding/hex"
 	"log"
