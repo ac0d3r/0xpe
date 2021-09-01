@@ -80,7 +80,7 @@ typedef struct _LDR_DATA_TABLE_ENTRY {
 
 在 Vista 之前的 Windows 版本中，`InInitializationOrderModuleList` 中的前两个DLL是 `ntdll.dll`和`kernel32.dll`，但对于 Vista 及以后的版本，第二个DLL更改为`kernelbase.dll`。
 
-`InMemoryOrderModuleList` 中的第一个 `calc.exe`（可执行文件），第二个是`ntdll.dll`，第三个是`kernel32.dll`，目前这适用于所有 Windows 版本是首选方法。
+`InMemoryOrderModuleList` 中的第一个 `自身.exe`，第二个是`ntdll.dll`，第三个是`kernel32.dll`，目前这适用于所有 Windows 版本是首选方法。
 
 **kernel32.dll寻址流程：**
 

@@ -14,3 +14,7 @@
 ## 编写 windows shellcode
 
 - 用 asm 编写一个简单的 shellcode 思路总结：[notes.md](./shellcode/shellcode-notes.md)
+
+## shellcodeLoader 小记
+
+- 基本原理和常见加载的方式（还有一些姿势没来得及学）[notes.md](./shellcodeLoader/shellcode-loader-notes.md)

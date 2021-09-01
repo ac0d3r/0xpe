@@ -139,6 +139,8 @@ func main() {
 
 虽然目前只是为了研究下 shellcode loader 原理以及 windows api，但是发现上面这些运行 shellcode 的方式 bypassAV 能力都很弱。关键点为了编写位置无关代码就一定要先获取到 `ntdll.dll` 或者 `kernel32.dll` 的基地址，就会存在明显的特征指令。要么就是在动态运行时要通过关键函数 `VirtualAlloc`、 `VirtualProtect`等，搞到一块有执行权限的内存，这些关键函数都被 hook 时也很容易被检测出来，我觉得 bypass AV 第一步就是要解决上面两个问题...
 
+- 因为现在加载的方式，已经不需要考虑到避免 shellcode 中的 0x00 了
+
 ## 贴心小公举
 
 整理一些常量函数签名以便查阅：
