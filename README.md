@@ -13,7 +13,7 @@
 
 ## 编写 windows shellcode
 
-- 用 asm 编写一个简单的 shellcode 思路总结：[notes.md](./shellcode/shellcode-notes.md)
+- 用ASM编写一个简单的Windows Shellcode思路总结 [🔗xz.aliyun.com/t/10078](https://xz.aliyun.com/t/10078) | [notes.md](./shellcode/shellcode-notes.md)
 
 ## shellcodeLoader 小记
 
